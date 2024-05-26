@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-import keras.backend as K
-from keras.layers import multiply
-from keras.layers.core import Dense, Reshape, Lambda, RepeatVector, Permute, Flatten
-from keras.layers.recurrent import LSTM
-from keras.models import Model, Input
+import keras._tf_keras.keras.backend as K
+from keras._tf_keras.keras.layers import multiply
+from keras._tf_keras.keras.layers import Dense, Reshape, Lambda, RepeatVector, Permute, Flatten, Input
+from keras._tf_keras.keras.layers import LSTM
+from keras._tf_keras.keras.models import Model
 
 # plot part.
 import matplotlib.pyplot as plt

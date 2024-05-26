@@ -260,15 +260,15 @@ class MimicParser(object):
         df['FEATURES'] = df['ITEMID'].apply(lambda x: pid.rev[x])
         self.hadm_dict = dict(zip(df['HADMID_DAY'], df['SUBJECT_ID']))
         df2 = pd.pivot_table(df, index='HADMID_DAY', columns='FEATURES',
-                             values='VALUENUM', fill_value=np.nan)
+                             values='VALUENUM', fill_value=np.nan, dropna=False)
         df3 = pd.pivot_table(df, index='HADMID_DAY', columns='FEATURES',
-                             values='VALUENUM', aggfunc=np.std, fill_value=0)
+                             values='VALUENUM', aggfunc=np.std, fill_value=0, dropna=False)
         df3.columns = ["{0}_std".format(i) for i in list(df2.columns)]
         df4 = pd.pivot_table(df, index='HADMID_DAY', columns='FEATURES',
-                             values='VALUENUM', aggfunc=np.amin, fill_value=np.nan)
+                             values='VALUENUM', aggfunc=np.amin, fill_value=np.nan, dropna=False)
         df4.columns = ["{0}_min".format(i) for i in list(df2.columns)]
         df5 = pd.pivot_table(df, index='HADMID_DAY', columns='FEATURES',
-                             values='VALUENUM', aggfunc=np.amax, fill_value=np.nan)
+                             values='VALUENUM', aggfunc=np.amax, fill_value=np.nan, dropna=False)
         df5.columns = ["{0}_max".format(i) for i in list(df2.columns)]
         df2 = pd.concat([df2, df3, df4, df5], axis=1)
         df2['tobacco'].apply(lambda x: np.around(x))
@@ -451,10 +451,10 @@ if __name__ == '__main__':
     FILE_STR = 'CHARTEVENTS_reduced'
     mp = MimicParser()
 
-#    mp.reduce_total(ROOT + 'CHARTEVENTS.csv')
-#    mp.create_day_blocks(ROOT+ FOLDER + FILE_STR + '.csv')
-#    mp.add_admissions_columns(ROOT + FOLDER + FILE_STR + '_24_hour_blocks.csv')
-#    mp.add_patient_columns(ROOT + FOLDER + FILE_STR + '_24_hour_blocks_plus_admissions.csv')
+    mp.reduce_total(ROOT + 'CHARTEVENTS.csv')
+    mp.create_day_blocks(ROOT+ FOLDER + FILE_STR + '.csv')
+    mp.add_admissions_columns(ROOT + FOLDER + FILE_STR + '_24_hour_blocks.csv')
+    mp.add_patient_columns(ROOT + FOLDER + FILE_STR + '_24_hour_blocks_plus_admissions.csv')
     mp.clean_prescriptions(ROOT + FOLDER + FILE_STR + 
                          '_24_hour_blocks_plus_admissions_plus_patients.csv')
     mp.add_prescriptions(ROOT + FOLDER + FILE_STR + 

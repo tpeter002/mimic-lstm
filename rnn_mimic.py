@@ -13,10 +13,10 @@ from pad_sequences import PadSequences
 from attention_function import attention_3d_block as Attention 
 
 from keras import backend as K
-from keras.models import Model, Input, load_model #model_from_json
-from keras.layers import Masking, Flatten, Embedding, Dense, LSTM, TimeDistributed
-from keras.callbacks import TensorBoard, ModelCheckpoint
-from keras.preprocessing.sequence import pad_sequences
+from keras._tf_keras.keras.models import Model, load_model #model_from_json
+from keras._tf_keras.keras.layers import Masking, Flatten, Embedding, Dense, LSTM, TimeDistributed, Input
+from keras._tf_keras.keras.callbacks import TensorBoard, ModelCheckpoint
+from keras._tf_keras.keras.preprocessing.sequence import pad_sequences
 from keras import regularizers
 from keras import optimizers
 
@@ -292,7 +292,7 @@ def build_model(no_feature_cols=None, time_steps=7, output_summary=False):
   preds = TimeDistributed(Dense(1, activation="sigmoid"))(x)
   model = Model(inputs=input_layer, outputs=preds)
   
-  RMS = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08)
+  RMS = optimizers.RMSprop(learning_rate=0.001, rho=0.9, epsilon=1e-08)
   model.compile(optimizer=RMS, loss='binary_crossentropy', metrics=['acc'])
   
   if output_summary:
@@ -356,7 +356,7 @@ def train(model_name="kaji_mach_0", synth_data=False, target='MI',
   #init callbacks
   tb_callback = TensorBoard(log_dir='./logs/{0}_{1}.log'.format(model_name, time),
     histogram_freq=0,
-    write_grads=False,
+    #write_grads=False,
     write_images=True,
     write_graph=True) 
 
@@ -367,13 +367,13 @@ def train(model_name="kaji_mach_0", synth_data=False, target='MI',
     os.makedirs(checkpoint_dir)
 
   checkpointer = ModelCheckpoint(
-    filepath=checkpoint_dir+"/model.{epoch:02d}-{val_loss:.2f}.hdf5",
+    filepath=checkpoint_dir+"/model.{epoch:02d}-{val_loss:.2f}.keras",
     monitor='val_loss',
     verbose=0,
     save_best_only=True,
     save_weights_only=False,
     mode='auto',
-    period=1)
+    save_freq='epoch')
 
   #fit
   model.fit(
@@ -385,7 +385,7 @@ def train(model_name="kaji_mach_0", synth_data=False, target='MI',
     validation_data=(X_VAL, Y_VAL),
     shuffle=True)
 
-  model.save('./saved_models/{0}.h5'.format(model_name))
+  model.save('./saved_models/{0}.keras'.format(model_name))
 
   if predict:
     print('TARGET: {0}'.format(target))
@@ -408,7 +408,7 @@ def train(model_name="kaji_mach_0", synth_data=False, target='MI',
 
 def return_loaded_model(model_name="kaji_mach_0"):
 
-  loaded_model = load_model("./saved_models/{0}.h5".format(model_name))
+  loaded_model = load_model("./saved_models/{0}.keras".format(model_name))
 
   return loaded_model
 

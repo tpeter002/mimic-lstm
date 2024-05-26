@@ -1,0 +1,6 @@
+venv/
+logs/
+pickled_objects/
+__pycache__/
+mimic_database/
+saved_models/
